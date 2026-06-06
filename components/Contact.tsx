@@ -1,0 +1,223 @@
+"use client";
+import { useRef, useState } from "react";
+import { motion, useInView } from "framer-motion";
+
+const contactItems = [
+  { icon: "📧", label: "EMAIL", value: "shruti@email.com", href: "mailto:shruti@email.com" },
+  { icon: "🔗", label: "LINKEDIN", value: "linkedin.com/in/shrutipatil", href: "#" },
+  { icon: "🐙", label: "GITHUB", value: "github.com/shrutipatil", href: "#" },
+];
+
+export default function Contact() {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [msg, setMsg] = useState("");
+
+  function handleSubmit() {
+    if (!name.trim() || !email.trim() || !msg.trim()) {
+      alert("⚠ Please fill all fields!");
+      return;
+    }
+    alert("✓ MESSAGE SENT! Will respond within 24h.");
+    setName(""); setEmail(""); setMsg("");
+  }
+
+  return (
+    <section id="contact" ref={ref} style={{ padding: "6rem 6vw" }}>
+      <motion.h2
+        initial={{ opacity: 0, y: 20 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.5 }}
+        style={{
+          fontFamily: '"Press Start 2P", monospace',
+          fontSize: "clamp(14px, 2.5vw, 24px)",
+          color: "#780000",
+          textShadow: "3px 3px 0 #3d0000",
+          marginBottom: "3rem",
+          display: "inline-block",
+          borderBottom: "4px solid #780000",
+          paddingBottom: "0.5rem",
+        }}
+      >
+        ✉ SEND MESSAGE
+      </motion.h2>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1.5fr 1fr",
+          gap: "4rem",
+          alignItems: "start",
+        }}
+        className="contact-grid"
+      >
+        {/* Dialogue box */}
+        <motion.div
+          initial={{ opacity: 0, x: -30 }}
+          animate={inView ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          style={{
+            border: "4px solid #780000",
+            boxShadow: "6px 6px 0 #3d0000, inset 0 0 0 3px rgba(120,0,0,0.1)",
+            background: "#ffffff",
+            padding: "2rem 1.8rem 1.8rem",
+            position: "relative",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              top: -17,
+              left: 20,
+              fontFamily: '"Press Start 2P", monospace',
+              fontSize: 8,
+              color: "#ffffff",
+              background: "#780000",
+              padding: "6px 14px",
+              border: "2px solid #3d0000",
+            }}
+          >
+            ■ DIALOGUE BOX ■
+          </div>
+          <span
+            style={{
+              position: "absolute",
+              bottom: 12,
+              right: 16,
+              fontSize: 32,
+              opacity: 0.2,
+              pointerEvents: "none",
+            }}
+          >
+            👾
+          </span>
+
+          {[
+            { label: "NAME", val: name, setter: setName, type: "text", placeholder: "Enter your name..." },
+            { label: "EMAIL", val: email, setter: setEmail, type: "email", placeholder: "your@email.com" },
+          ].map((f) => (
+            <div key={f.label} style={{ marginBottom: "1.2rem" }}>
+              <label
+                style={{
+                  fontFamily: '"Press Start 2P", monospace',
+                  fontSize: 8,
+                  color: "#780000",
+                  display: "block",
+                  marginBottom: "0.4rem",
+                }}
+              >
+                {f.label}
+              </label>
+              <input
+                className="pixel-input"
+                type={f.type}
+                placeholder={f.placeholder}
+                value={f.val}
+                onChange={(e) => f.setter(e.target.value)}
+              />
+            </div>
+          ))}
+
+          <div style={{ marginBottom: "1.4rem" }}>
+            <label
+              style={{
+                fontFamily: '"Press Start 2P", monospace',
+                fontSize: 8,
+                color: "#780000",
+                display: "block",
+                marginBottom: "0.4rem",
+              }}
+            >
+              MESSAGE
+            </label>
+            <textarea
+              className="pixel-input"
+              style={{ minHeight: 100, resize: "vertical" }}
+              placeholder="Type your message..."
+              value={msg}
+              onChange={(e) => setMsg(e.target.value)}
+            />
+          </div>
+
+          <button className="pixel-btn" onClick={handleSubmit}>
+            SEND →
+          </button>
+        </motion.div>
+
+        {/* Contact cards */}
+        <motion.div
+          initial={{ opacity: 0, x: 30 }}
+          animate={inView ? { opacity: 1, x: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+        >
+          {contactItems.map((c, i) => (
+            <motion.div
+              key={c.label}
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.4, delay: 0.3 + i * 0.1 }}
+              style={{
+                border: "3px solid #780000",
+                boxShadow: "4px 4px 0 #3d0000",
+                background: "#ffffff",
+                padding: "1rem 1.2rem",
+                display: "flex",
+                alignItems: "center",
+                gap: "1rem",
+              }}
+            >
+              <span style={{ fontSize: 28, flexShrink: 0 }}>{c.icon}</span>
+              <div>
+                <span
+                  style={{
+                    fontFamily: '"Press Start 2P", monospace',
+                    fontSize: 7,
+                    color: "#780000",
+                    display: "block",
+                    marginBottom: 4,
+                  }}
+                >
+                  {c.label}
+                </span>
+                <a
+                  href={c.href}
+                  style={{
+                    fontFamily: "VT323, monospace",
+                    fontSize: 18,
+                    color: "#1a3a6b",
+                    textDecoration: "none",
+                  }}
+                >
+                  {c.value}
+                </a>
+              </div>
+            </motion.div>
+          ))}
+
+          <div
+            style={{
+              border: "3px solid #3d0000",
+              boxShadow: "4px 4px 0 #3d0000",
+              padding: "1rem 1.2rem",
+              background: "#780000",
+              marginTop: "0.5rem",
+            }}
+          >
+            <p style={{ fontFamily: "VT323, monospace", fontSize: 20, color: "#FFF6F2", lineHeight: 1.6 }}>
+              ▶ Currently open to new DevOps roles and freelance contracts. Response time: &lt; 24 hours.
+            </p>
+          </div>
+        </motion.div>
+      </div>
+
+      <style>{`
+        @media (max-width: 900px) {
+          .contact-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
+    </section>
+  );
+}
