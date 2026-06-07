@@ -1,6 +1,11 @@
 "use client";
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
+import emailjs from "@emailjs/browser";
+
+const SERVICE_ID = "service_qebjcfg";
+const TEMPLATE_ID = "template_y0lty0v";
+const PUBLIC_KEY = "v1mcN-r6L8Ek2XGsP";
 
 const contactItems = [
   { icon: "📧", label: "EMAIL", value: "shruti@email.com", href: "mailto:shruti@email.com" },
@@ -9,20 +14,39 @@ const contactItems = [
 ];
 
 export default function Contact() {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const ref = useRef<HTMLDivElement | null>(null);
+  const inView = useInView(ref);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [msg, setMsg] = useState("");
 
-  function handleSubmit() {
+  const handleSubmit = () => {
     if (!name.trim() || !email.trim() || !msg.trim()) {
       alert("⚠ Please fill all fields!");
       return;
     }
-    alert("✓ MESSAGE SENT! Will respond within 24h.");
-    setName(""); setEmail(""); setMsg("");
-  }
+
+    emailjs
+      .send(
+        SERVICE_ID,
+        TEMPLATE_ID,
+        {
+          from_name: name,
+          from_email: email,
+          message: msg,
+        },
+        PUBLIC_KEY
+      )
+      .then(() => {
+        alert("✓ MESSAGE SENT! Will respond within 24h.");
+        setName("");
+        setEmail("");
+        setMsg("");
+      })
+      .catch(() => {
+        alert("✗ Something went wrong. Please try again.");
+      });
+  };
 
   return (
     <section id="contact" ref={ref} style={{ padding: "6rem 6vw" }}>
