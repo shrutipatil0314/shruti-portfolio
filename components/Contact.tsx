@@ -2,30 +2,41 @@
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import emailjs from "@emailjs/browser";
-
+ 
 const SERVICE_ID = "service_qebjcfg";
 const TEMPLATE_ID = "template_y0lty0v";
 const PUBLIC_KEY = "v1mcN-r6L8Ek2XGsP";
-
+ 
 const contactItems = [
-  { icon: "📧", label: "EMAIL", value: "shruti@email.com", href: "mailto:shruti@email.com" },
-  { icon: "🔗", label: "LINKEDIN", value: "linkedin.com/in/shrutipatil", href: "#" },
-  { icon: "🐙", label: "GITHUB", value: "github.com/shrutipatil", href: "#" },
+  { icon: "📧", label: "EMAIL", value: "shrutipatil140312@gmail.com", href: "mailto:shrutipatil140312@gmail.com" },
+  { icon: "🔗", label: "LINKEDIN", value: "linkedin.com/in/shrutipatil", href: "https://linkedin.com/in/shrutipatil" },
+  { icon: "🐙", label: "GITHUB", value: "github.com/shrutipatil0314", href: "https://github.com/shrutipatil0314" },
 ];
-
+ 
+interface FormField {
+  label: string;
+  val: string;
+  setter: (v: string) => void;
+  type: string;
+  placeholder: string;
+}
+ 
 export default function Contact() {
-  const ref = useRef<HTMLDivElement | null>(null);
-  const inView = useInView(ref);
+  const ref = useRef<HTMLElement | null>(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [msg, setMsg] = useState("");
-
+  const [sending, setSending] = useState(false);
+ 
   const handleSubmit = () => {
     if (!name.trim() || !email.trim() || !msg.trim()) {
       alert("⚠ Please fill all fields!");
       return;
     }
-
+ 
+    setSending(true);
+ 
     emailjs
       .send(
         SERVICE_ID,
@@ -42,12 +53,19 @@ export default function Contact() {
         setName("");
         setEmail("");
         setMsg("");
+        setSending(false);
       })
       .catch(() => {
         alert("✗ Something went wrong. Please try again.");
+        setSending(false);
       });
   };
-
+ 
+  const fields: FormField[] = [
+    { label: "NAME", val: name, setter: setName, type: "text", placeholder: "Enter your name..." },
+    { label: "EMAIL", val: email, setter: setEmail, type: "email", placeholder: "your@email.com" },
+  ];
+ 
   return (
     <section id="contact" ref={ref} style={{ padding: "6rem 6vw" }}>
       <motion.h2
@@ -67,7 +85,7 @@ export default function Contact() {
       >
         ✉ SEND MESSAGE
       </motion.h2>
-
+ 
       <div
         style={{
           display: "grid",
@@ -105,6 +123,7 @@ export default function Contact() {
           >
             ■ DIALOGUE BOX ■
           </div>
+ 
           <span
             style={{
               position: "absolute",
@@ -117,11 +136,8 @@ export default function Contact() {
           >
             👾
           </span>
-
-          {[
-            { label: "NAME", val: name, setter: setName, type: "text", placeholder: "Enter your name..." },
-            { label: "EMAIL", val: email, setter: setEmail, type: "email", placeholder: "your@email.com" },
-          ].map((f) => (
+ 
+          {fields.map((f) => (
             <div key={f.label} style={{ marginBottom: "1.2rem" }}>
               <label
                 style={{
@@ -143,7 +159,7 @@ export default function Contact() {
               />
             </div>
           ))}
-
+ 
           <div style={{ marginBottom: "1.4rem" }}>
             <label
               style={{
@@ -164,12 +180,17 @@ export default function Contact() {
               onChange={(e) => setMsg(e.target.value)}
             />
           </div>
-
-          <button className="pixel-btn" onClick={handleSubmit}>
-            SEND →
+ 
+          <button
+            className="pixel-btn"
+            onClick={handleSubmit}
+            disabled={sending}
+            style={{ opacity: sending ? 0.6 : 1 }}
+          >
+            {sending ? "SENDING..." : "SEND →"}
           </button>
         </motion.div>
-
+ 
         {/* Contact cards */}
         <motion.div
           initial={{ opacity: 0, x: 30 }}
@@ -208,6 +229,8 @@ export default function Contact() {
                 </span>
                 <a
                   href={c.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   style={{
                     fontFamily: "VT323, monospace",
                     fontSize: 18,
@@ -220,7 +243,7 @@ export default function Contact() {
               </div>
             </motion.div>
           ))}
-
+ 
           <div
             style={{
               border: "3px solid #3d0000",
@@ -236,7 +259,7 @@ export default function Contact() {
           </div>
         </motion.div>
       </div>
-
+ 
       <style>{`
         @media (max-width: 900px) {
           .contact-grid { grid-template-columns: 1fr !important; }
@@ -245,3 +268,4 @@ export default function Contact() {
     </section>
   );
 }
+ 
